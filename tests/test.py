@@ -18,3 +18,5 @@ if os.path.exists('dev.env'):
         logging.info(f'Updated environment with dev.env')
     except Exception as e:
         logging.error(f'Cannot load dev.env due to {e}')
+
+print(os.environ.get('RIOT_API_TOKEN'))

@@ -1,0 +1,18 @@
+{
+    "__metadata__": {
+
+    },
+    "models": {
+        "bad_request_error": {},
+        "unauthorized_error": {},
+        "forbidden_error": {},
+        "data_not_found_error": {},
+        "method_not_allowed_error": {},
+        "unsupported_media_type_error": {},
+        "rate_limit_exceeded_error": {},
+        "internal_server_error": {},
+        "bad_gateway_error": {},
+        "service_unavailable_error": {},
+        "gateway_timeout_error": {}
+    }
+}
