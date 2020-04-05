@@ -21,8 +21,6 @@ logger.setLevel(logging.INFO)
 class ServiceCatalog:
 
     def __init__(self, local_catalog_dir=None):
-
-        # find available services (unvalidated)
         _catalog_dir = (
             local_catalog_dir or os.environ.get('local_catalog_dir')
         )
@@ -49,9 +47,15 @@ class ServiceCatalog:
         self._services = []
         for service in _found_services:
             if service and self._validate_service(service):
-                self._services.append(service)
+                try:
+                    service_obj = Service.service_factory(service)
+                    self._services.append(service_obj)
+                except Exception as e:
+                    logger.warning(
+                        f'Could not load {service} due to {e}'
+                    )
 
-
+    
     def __repr__(self):
         pass
 
@@ -68,13 +72,43 @@ class ServiceCatalog:
         
         return 'service.json' in _all_children
 
-    def _get_service_components(self, path):
-        if not os.path.exists(path):
-            logger.error(f'Service with path {path} does not exist.')
-            return []
-        
-        _all_components = [p for c in os.walk(path) for p in c[2]]
+
+class Service:
+
+    BASE_URL = os.environ.get('base_url')
+    if not Service.BASE_URL:
+        raise Exception('Environment variable "base_url" not set.')
 
 
-class ServiceCreator:
-    pass
+    @classmethod
+    def service_factory(cls, service_dir):
+        # load in service.json
+        _service_def_path = os.path.join(service_dir, 'service.json')
+        try:
+            with open(_service_def_path) as f:
+                service_def = json.load(f)
+        except Exception as e:
+            logger.error(f'Could not load {_service_def_path} due to {e}')
+
+        return service_def
+
+
+
+    @property
+    def key(self):
+        return self._key
+    @property
+    def ednpoint(self):
+        return self._endpoint
+    @property
+    def
+
+
+
+
+    def __init__(self, key, endpoint, version, requests={}, models={}):
+        self._key = key
+        self._endpoint = endpoint
+        self._version = version
+        self._requests = requests
+        self._models = models

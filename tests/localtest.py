@@ -9,6 +9,5 @@ sys.path.insert(0, os.path.abspath(os.path.join(
 from infernal import common as c
 from infernal.service import ServiceCatalog
 
-
 catalog = ServiceCatalog()
 c.jprint(catalog._services)
