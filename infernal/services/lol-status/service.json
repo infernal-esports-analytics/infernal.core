@@ -1,0 +1,116 @@
+{
+    "__metadata__": {
+        "service_key": "status",
+        "service_endpoint": "status",
+        "service_version": "v3"
+    },
+    "requests": {
+        "get_status": {
+            "method": "GET",
+            "url": "shard-data",
+            "description": "Get League of Legends status for the given shard.",
+            "dtype": "%shard_status_dto%"
+        }
+    },
+    "models": {
+        "shard_status_dto": {
+            "__metadata__": {
+                "class": "ShardStatusDTO"
+            },
+            "locales": {
+                "dtype": "list[string]"
+            },
+            "host": {
+                "key": "hostname",
+                "dtype": "string"
+            },
+            "name": {
+                "dtype": "string"
+            },
+            "services": {
+                "dtype": "list[%service_dto%]"
+            },
+            "slug": {
+                "dtype": "string"
+            },
+            "region": {
+                "key": "region_tag",
+                "dtype": "string"
+            }
+        },
+        "service_dto": {
+            "__metadata__": {
+                "class": "ServiceDTO"
+            },
+            "incidents": {
+                "dtype": "list[%incident_dto%]"
+            },
+            "name": {
+                "dtype": "string"
+            },
+            "slug": {
+                "dtype": "string"
+            },
+            "status": {
+                "dtype": "string"
+            }
+        },
+        "incident_dto": {
+            "__metadata__": {
+                "class": "IncidentDTO"
+            },
+            "active": {
+                "dtype": "boolean"
+            },
+            "created_at": {
+                "dtype": "string"
+            },
+            "id": {
+                "dtype": "long"
+            },
+            "updates": {
+                "dtype": "list[%message_dto%]"
+            }
+        },
+        "message_dto": {
+            "__metadata__": {
+                "class": "MessageDTO"
+            },
+            "severity": {
+                "dtype": "string"
+            },
+            "updated_at": {
+                "dtype": "string"
+            },
+            "author": {
+                "dtype": "string"
+            },
+            "translations": {
+                "dtype": "list[%translation_dto%]"
+            },
+            "created_at": {
+                "dtype": "string"
+            },
+            "id": {
+                "dtype": "string"
+            },
+            "content": {
+                "dtype": "string"
+            }
+        },
+        "translation_dto": {
+            "__metadata__": {
+                "class": "TranslationDTO"
+            },
+            "updated_at": {
+                "dtype": "string"
+            },
+            "locale": {
+                "dtype": "string"
+            },
+            "content": {
+                "dtype": "string"
+            }
+        }
+    }
+}

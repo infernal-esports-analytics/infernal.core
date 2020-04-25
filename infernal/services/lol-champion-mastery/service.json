@@ -5,10 +5,10 @@
         "service_version": "v4"
     },
     "requests": {
-        "mastery_by_summoner_id": {
+        "get_summoner_mastery": {
             "method": "GET",
-            "url": "champion-masteries/by-summoner/${summoner_id}",
-            "path_params": {
+            "url": "scores/by-summoner/${summoner_id}",
+            "params": {
                 "summoner_id": {
                     "key": "encryptedSummonerId",
                     "dtype": "string",
@@ -17,11 +17,25 @@
                     "description": "Summoner ID associated with the player"
                 }
             },
-            "models": {
-                "output": "champion_mastery_dto"
-            }
+            "description": "Get a player's total champion mastery score, which is the sum of individual champion mastery levels.",
+            "dtype": "int"
         },
-        "mastery_by_summoner_champion_id": {
+        "get_summoner_masteries": {
+            "method": "GET",
+            "url": "champion-masteries/by-summoner/${summoner_id}",
+            "params": {
+                "summoner_id": {
+                    "key": "encryptedSummonerId",
+                    "dtype": "string",
+                    "required": true,
+                    "encrypted": true,
+                    "description": "Summoner ID associated with the player"
+                }
+            },
+            "description": "Get all champion mastery entries sorted by number of champion points descending.",
+            "dtype": "list[%champion_mastery_dto%]"
+        },
+        "get_summoner_champion_mastery": {
             "method": "GET",
             "url": "champion-masteries/by-summoner/${summoner_id}/by-champion/${champion_id}",
             "path_params": {
@@ -39,25 +53,7 @@
                     "description": "Champion ID to retrieve the Champion Master for"
                 }
             },
-            "models": {
-                "output": "champion_mastery_dto"
-            }
-        },
-        "mastery_score_by_summoner_id": {
-            "method": "GET",
-            "url": "scores/by-summoner/${summoner_id}",
-            "path_params": {
-                "summoner_id": {
-                    "key": "encryptedSummonerId",
-                    "dtype": "string",
-                    "required": true,
-                    "encrypted": true,
-                    "description": "Summoner ID associated with the player"
-                }
-            },
-            "models": {
-                "output": "int"
-            }
+            "dtype": "%champion_mastery_dto%"
         }
     },
     "models": {
@@ -66,52 +62,51 @@
                 "class": "ChampionMasteryDTO",
                 "description": "The object contains single Champion Mastery information for player and champion combination."
             },
+            "points_to_level": {
+                "key": "championPointsUntilNextLevel",
+                "dtype": "long",
+                "description": "Number of poitns needed to achieve next level. Zero if player reached maximum champion level for this champion."
+            },
             "chest_granted": {
                 "key": "chestGranted",
                 "dtype": "boolean",
                 "description": "Is chest granted for this champion or not in current season."
-            },
-            "champion_level": {
-                "key": "championLevel",
-                "dtype": "int",
-                "description": "Champion level for specified player and champion combination."
-            },
-            "champion_points": {
-                "key": "championPoints",
-                "dtype": "int",
-                "description": "Total number of champion points for this player and champion combination- they are used to determine championLevel."
             },
             "champion_id": {
                 "key": "championId",
                 "dtype": "long",
                 "description": "Champion ID for this entry."
             },
-            "points_to_level": {
-                "key": "championPointsUntilNextLevel",
-                "dtype": "long",
-                "description": "Number of poitns needed to achieve next level. Zero if player reached maximum champion level for this champion."
-            },
             "last_play_time": {
                 "key": "lastPlayTime",
                 "dtype": "long",
-                "converter": "unix_milliseconds",
                 "description": "Last time this champion was played by this player - in Unix milliseconds time format."
             },
-            "tokens_earned": {
-                "key": "tokensEarned",
+            "champion_level": {
+                "key": "championLevel",
                 "dtype": "int",
-                "description": "The token earned for this champion to levelup."
-            },
-            "points_since_level": {
-                "key": "champion PointsSinceLastLevel",
-                "dtype": "long",
-                "description": "Number of points earned since current level has been achieved."
+                "description": "Champion level for specified player and champion combination."
             },
             "summoner_id": {
                 "key": "summonerId",
                 "dtype": "string",
                 "encrypted": true,
                 "description": "Summoner ID for this entry"
+            },
+            "champion_points": {
+                "key": "championPoints",
+                "dtype": "int",
+                "description": "Total number of champion points for this player and champion combination- they are used to determine championLevel."
+            },
+            "points_since_level": {
+                "key": "champion PointsSinceLastLevel",
+                "dtype": "long",
+                "description": "Number of points earned since current level has been achieved."
+            },
+            "tokens_earned": {
+                "key": "tokensEarned",
+                "dtype": "int",
+                "description": "The token earned for this champion to levelup."
             }
         }
     }

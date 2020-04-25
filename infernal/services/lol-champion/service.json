@@ -5,12 +5,11 @@
         "service_version": "v3"
     },
     "requests": {
-        "champion_rotations": {
+        "get_champion_rotations": {
             "method": "GET",
             "url": "champion-rotations",
-            "models": {
-                "output": "champion_info_dto"
-            }
+            "description": "Returns champion rotations, including free-to-play and low-level free-to-play rotations (REST)",
+            "dtype": "%champion_info_dto%"
         }
     },
     "models": {
@@ -18,15 +17,15 @@
             "__metadata__": {
                 "class": "ChampionInfoDTO"
             },
-            "champion_ids": {
+            "global_champion_ids": {
                 "key": "freeChampionIdsForNewPlayers",
                 "dtype": "list[int]"
             },
-            "champion_ids_for_new": {
+            "new_player_champion_ids": {
                 "key": "freeChampionIds",
                 "dtype": "list[int]"
             },
-            "max_new_player_level": {
+            "new_player_max_level": {
                 "key": "maxNewPlayerLevel",
                 "dtype": "int"
             }

@@ -22,6 +22,7 @@ logger.setLevel(logging.INFO)
 URL = 'https://developer.riotgames.com/apis'
 DRIVER = os.path.join(os.path.dirname(__file__), 'chromedriver')
 SITE_FOLDER = 'developer.riotgames.com'
+SERVICES_FOLDER = 'infernal.github.io'
 
 """ Utility Methods """
 def jprint(data, load=False, marshall=True, indent=2):
@@ -45,11 +46,16 @@ def jprint(data, load=False, marshall=True, indent=2):
 
 
 def parse_api_content(api_name):
+    logger.info(f'Entering {api_name}.')
+
     tables = {}
 
     driver = webdriver.Chrome(executable_path=DRIVER)
     driver.get(f'{URL}#{api_name}')
+    
+    logger.info(f'Loading Page.')
     time.sleep(5)
+
 
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     elements = soup.body.find_all('div', {'api-name': api_name})
@@ -77,9 +83,10 @@ def parse_api_content(api_name):
                 'options': _options
             }
 
+            logger.info(f'Element data:\n{json.dumps(data, indent=2)}')
             Path(f'{SITE_FOLDER}/{api_name}').mkdir(parents=True, exist_ok=True)
             with open(f'{SITE_FOLDER}/{api_name}/{op["id"]}.html', 'w') as f:
-                f.write(str(header.prettify()))
+                f.write(str(op.prettify()))
 
             defs[op['id']] = data
         tables.update(defs)
@@ -87,11 +94,15 @@ def parse_api_content(api_name):
     return tables
 
 
+Path(f'{SERVICES_FOLDER}').mkdir(parents=True, exist_ok=True)
+
 page = requests.get(URL)
 soup = BeautifulSoup(page.content, 'html.parser')
-_apis = [k for k in soup.body.find_all('div') if k.has_attr('api-name')]
-apis = {
-    k['api-name']: parse_api_content(k['api-name']) for k in _apis[:]
-}
-
-jprint(apis)
+apis = [k for k in soup.body.find_all('div') if k.has_attr('api-name')]
+for api in apis[:3]:
+    api_name = api['api-name']
+    record = parse_api_content(api_name)
+    
+    logger.info(f'Writing {api_name} record')
+    with open(f'{SERVICES_FOLDER}/{api_name}.json', 'w') as f:
+        json.dump(record, f, indent=4)

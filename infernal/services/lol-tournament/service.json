@@ -8,15 +8,6 @@
         "": {
             "method": "",
             "url": "",
-            "params": {
-                "": {
-                    "key": "",
-                    "dtype": "",
-                    "required": true,
-                    "encrypted": true,
-                    "description": ""
-                }
-            },
             "description": "",
             "dtype": ""
         }
@@ -26,7 +17,7 @@
             "__metadata__": {
                 "class": ""
             },
-            "": {
+            "global_champion_ids": {
                 "key": "",
                 "dtype": ""
             }
