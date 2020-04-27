@@ -1,21 +1,20 @@
 import os
+import re
 import sys
 import json
 import logging
 
 from infernal import common as c
+from infernal.session import InfernalHTTPSession
+from infernal.exception import InfernalServiceException
+
 
 
 """ Exceptions """
 
-
-
-
-
 """ logging config """
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-
 
 
 class ServiceCatalog:
@@ -44,23 +43,39 @@ class ServiceCatalog:
             if not str(p).startswith('__')
         ]
 
-        self._services = []
+        self._services = {}
         for service in _found_services:
             if service and self._validate_service(service):
                 try:
-                    service_obj = Service.service_factory(service)
-                    self._services.append(service_obj)
+                    with open(f'{service}/service.json') as f:
+                        service_obj = json.load(f)
+                    key = service_obj.get('__metadata__',{}).get('service_key')
+                    if key:
+                        self._services[key] = service
+
                 except Exception as e:
                     logger.warning(
                         f'Could not load {service} due to {e}'
                     )
 
-    
     def __repr__(self):
         pass
 
     def __str__(self):
         pass
+
+
+    def get_service(self, service_key):
+        if not service_key in self._services:
+            _msg = f'Unknown service "{service_key}"'
+            logger.exception(_msg)
+            raise InfernalServiceException(_msg)
+
+        with open(f'{self._services[service_key]}/service.json') as f:
+            service_doc = json.load(f)
+
+        return service_doc
+        
 
 
     def _validate_service(self, path):
@@ -73,42 +88,98 @@ class ServiceCatalog:
         return 'service.json' in _all_children
 
 
-class Service:
-
-    BASE_URL = os.environ.get('base_url')
-    if not Service.BASE_URL:
-        raise Exception('Environment variable "base_url" not set.')
-
-
-    @classmethod
-    def service_factory(cls, service_dir):
-        # load in service.json
-        _service_def_path = os.path.join(service_dir, 'service.json')
-        try:
-            with open(_service_def_path) as f:
-                service_def = json.load(f)
-        except Exception as e:
-            logger.error(f'Could not load {_service_def_path} due to {e}')
-
-        return service_def
-
+class ServiceBase:
+    PAT = re.compile(r"\${(?P<arg>\w+)}")
 
 
     @property
-    def key(self):
-        return self._key
+    def __metadata__(self):
+        return dict(self.__service__.get('__metadata__',{}))
+
     @property
-    def ednpoint(self):
-        return self._endpoint
+    def requests(self):
+        _service_def = dict(self.__service__.get('requests',{}))
+        return {k: self._build_url(v.get('url')) for k,v in _service_def.items()}
+
     @property
-    def
+    def models(self):
+        return dict(self.__service__.get('models',{}))
 
 
 
+    def __init__(self, service_data={}, session=None):
+        self.session = session or InfernalHTTPSession()
+        self.__service__ = service_data
 
-    def __init__(self, key, endpoint, version, requests={}, models={}):
-        self._key = key
-        self._endpoint = endpoint
-        self._version = version
-        self._requests = requests
-        self._models = models
+    def __getattr__(self, key):
+        def _null_request(*args, **kwargs):
+            return None
+
+        if not key in self.requests:
+            return self._null_request
+        return self._build_method(self.requests[key])
+
+
+    def meta(self, key, default=None):
+        return self.__metadata__.get(key, default)
+
+
+    def _build_url(self, url):
+        return '/'.join([
+            self.session.base_url,
+            self.meta('service_product'),
+            self.meta('service_endpoint'),
+            self.meta('service_version'),
+            url
+        ])
+
+    def _build_method(self, url):
+        _args = self.PAT.findall(url)
+
+        def method(*args, **kwargs):
+            if len(args) > len(_args):
+                _msg = f'Too many arguments provided. Expected {len(_args)}'
+                logger.exception(_msg)
+                raise InfernalServiceException(_msg)
+
+            params = dict(zip(_args, args))
+
+            for k,v in kwargs.items():
+                if not k in _args:
+                    _msg = f'Unrecognized argument "{k}"'
+                    logger.exception(_msg)
+                    raise InfernalServiceException(_msg)
+                elif k in params:
+                    _msg = f'Argument "{k}" provided more than once'
+                    logger.exception(_msg)
+                    raise InfernalServiceException(_msg)
+                else:
+                    params[k] = v
+
+            if not all(a in params for a in _args):
+                _misargs = ', '.join([
+                    a for a in _args if not a in params
+                ])
+                _msg = f'Missing required arguments: {_misargs}'
+                logger.exception(_msg)
+                raise InfernalServiceException(_msg)
+
+            nonlocal url
+            for k,v in params.items():
+                url = url.replace(f'${{{k}}}', v)
+
+            print(url)
+            response = self.session.get(url)
+            return json.loads(response.text)
+
+        return method
+
+
+def create_service(service_key, session=None):
+    catalog = ServiceCatalog()
+    _service_obj = type(service_key.title(), (ServiceBase,), {})
+    return _service_obj(
+        service_data=catalog.get_service(service_key),
+        session=session
+    )
+

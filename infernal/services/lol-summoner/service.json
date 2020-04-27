@@ -1,25 +1,105 @@
 {
     "__metadata__": {
-        "service_key": "",
-        "service_endpoint": "",
-        "service_version": ""
+        "service_product": "lol",
+        "service_key": "summoner",
+        "service_endpoint": "summoner",
+        "service_version": "v4"
     },
     "requests": {
-        "": {
-            "method": "",
-            "url": "",
-            "description": "",
-            "dtype": ""
+        "get_summoner_by_account": {
+            "method": "GET",
+            "url": "summoners/by-account/${account_id}",
+            "params": {
+                "account_id": {
+                    "key": "encryptedAccountId",
+                    "dtype": "string",
+                    "required": true,
+                    "encrypted": true
+                }
+            },
+            "description": "Get a summoner by account ID.",
+            "dtype": "%summoner_dto%"
+        },
+        "get_summoner_by_name": {
+            "method": "GET",
+            "url": "summoners/by-name/${name}",
+            "params": {
+                "name": {
+                    "key": "summonerName",
+                    "dtype": "string",
+                    "required": true,
+                    "encrypted": true
+                }
+            },
+            "description": "Get a summoner by account ID.",
+            "dtype": "%summoner_dto%"
+        },
+        "get_summoner_by_puuid": {
+            "method": "GET",
+            "url": "summoners/by-puuid/${puuid}",
+            "params": {
+                "puuid": {
+                    "key": "encryptedPUUID",
+                    "dtype": "string",
+                    "required": true,
+                    "encrypted": true
+                }
+            },
+            "description": "Get a summoner by PUUID.",
+            "dtype": "%summoner_dto%"
+        },
+        "get_summoner_by_id": {
+            "method": "GET",
+            "url": "summoners/${summoner_id}",
+            "params": {
+                "summoner_id": {
+                    "key": "encryptedSummonerId",
+                    "dtype": "string",
+                    "required": true,
+                    "encrypted": true
+                }
+            },
+            "description": "Get a summoner by summoner ID.",
+            "dtype": "%summoner_dto%"
         }
     },
     "models": {
-        "": {
+        "summoner_dto": {
             "__metadata__": {
-                "class": ""
+                "class": "SummonerDTO"
             },
-            "global_champion_ids": {
-                "key": "",
-                "dtype": ""
+            "account_id": {
+                "key": "accountId",
+                "dtype": "string",
+                "description": "Encrypted account ID. Max length 56 characters."
+            },
+            "profile_icon_id": {
+                "key": "profileIconId",
+                "dtype": "int",
+                "description": "ID of the summoner icon associated with the summoner."
+            },
+            "revised_at": {
+                "key": "revisionDate",
+                "dtype": "long",
+                "description": "Date summoner was last modified specified as epoch milliseconds. The following events will update this timestamp: profile icon change, playing the tutorial or advanced tutorial, finishing a game, summoner name change"
+            },
+            "name": {
+                "dtype": "string",
+                "description": "Summoner name."
+            },
+            "summoner_id": {
+                "key": "id",
+                "dtype": "string",
+                "description": "Encrypted summoner ID. Max length 63 characters."
+            },
+            "puuid": {
+                "dtype": "string",
+                "description": "Encrypted PUUID. Exact length of 78 characters."
+            },
+            "summoner_level": {
+                "key": "summonerLevel",
+                "dtype": "long",
+                "description": "Summoner level associated with the summoner."
             }
         }
     }

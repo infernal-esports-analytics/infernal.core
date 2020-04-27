@@ -1,13 +1,21 @@
-import conftest
+import context
 
-import os, sys
-sys.path.insert(0, os.path.abspath(os.path.join(
-    os.path.dirname(__file__), '..'
-)))
-
+import os
+import re
+import sys
+import json
+import logging
+import functools
 
 from infernal import common as c
-from infernal.service import ServiceCatalog
+from infernal.service import create_service
 
-catalog = ServiceCatalog()
-c.jprint(catalog._services)
+
+""" Logging Setup """
+logger = logging.getLogger('local')
+logger.setLevel(logging.INFO)
+
+
+summoner = create_service('summoner')
+r = summoner.get_summoner_by_name('Shparki')
+c.jprint(r)
