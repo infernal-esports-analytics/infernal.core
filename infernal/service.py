@@ -9,9 +9,6 @@ from infernal.session import InfernalHTTPSession
 from infernal.exception import InfernalServiceException
 
 
-
-""" Exceptions """
-
 """ logging config """
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -58,13 +55,6 @@ class ServiceCatalog:
                         f'Could not load {service} due to {e}'
                     )
 
-    def __repr__(self):
-        pass
-
-    def __str__(self):
-        pass
-
-
     def get_service(self, service_key):
         if not service_key in self._services:
             _msg = f'Unknown service "{service_key}"'
@@ -76,8 +66,6 @@ class ServiceCatalog:
 
         return service_doc
         
-
-
     def _validate_service(self, path):
         if not os.path.exists(path):
             logger.error(f'Service with path {path} does not exist.')
@@ -89,8 +77,7 @@ class ServiceCatalog:
 
 
 class ServiceBase:
-    PAT = re.compile(r"\${(?P<arg>\w+)}")
-
+    ARG_PAT = re.compile(r"\${(?P<arg>\w+)}")
 
     @property
     def __metadata__(self):
@@ -99,7 +86,10 @@ class ServiceBase:
     @property
     def requests(self):
         _service_def = dict(self.__service__.get('requests',{}))
-        return {k: self._build_url(v.get('url')) for k,v in _service_def.items()}
+        return {
+            k: (v.get('method'), self._build_url(v.get('url')))
+            for k,v in _service_def.items()
+        }
 
     @property
     def models(self):
@@ -112,12 +102,11 @@ class ServiceBase:
         self.__service__ = service_data
 
     def __getattr__(self, key):
-        def _null_request(*args, **kwargs):
-            return None
-
         if not key in self.requests:
-            return self._null_request
-        return self._build_method(self.requests[key])
+            _msg = f'Unknown method {key}'
+            logger.exception(_msg)
+            raise InfernalServiceException(_msg)
+        return self._build_method(*self.requests[key])
 
 
     def meta(self, key, default=None):
@@ -133,8 +122,8 @@ class ServiceBase:
             url
         ])
 
-    def _build_method(self, url):
-        _args = self.PAT.findall(url)
+    def _build_method(self, verb, url):
+        _args = self.ARG_PAT.findall(url)
 
         def method(*args, **kwargs):
             if len(args) > len(_args):
@@ -168,8 +157,20 @@ class ServiceBase:
             for k,v in params.items():
                 url = url.replace(f'${{{k}}}', v)
 
-            print(url)
-            response = self.session.get(url)
+            logger.info(f'Requesting GET {url}')
+
+            try:
+                response = self.session.request(verb, url)
+            except Exception as e:
+                _msg = f'Could not complete request due to {e}'
+                logger.exception(_msg)
+                raise
+            
+            logger.info(
+                f'Returned {response.status_code} response:\n'
+                f'{json.dumps(json.loads(response.text), indent=2)}'
+            )
+
             return json.loads(response.text)
 
         return method

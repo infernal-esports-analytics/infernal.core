@@ -4,7 +4,18 @@ import json
 from enum import Enum, unique
 
 
-# from infernal import common as common
+
+@unique
+class RiotProducts(Enum):
+    # League of Legends (LoL)
+    LOL =               'lol'
+
+    # Legends of Runterra (LoR)
+    LOR =               'lor'
+
+    # Teamfight Tacticts (TFT)
+    TFT =               'ltr'
+
 
 
 @unique
@@ -25,5 +36,19 @@ class RiotEndpoints(Enum):
     ASIA =              'asia.api.riotgames.com'
     EUROPE =            'europe.api.riotgames.com'
 
+
+DataDragonBase = 'https://static.developer.riotgames.come/docs/'
 class DataDragon(Enum):
-    BASE =              'https://static.devele'
+    SEASONS =           'seasons.json'
+    QUEUES =            'queues.json'
+    MAPS =              'maps.json'
+    GAME_MODES =        'gameModes.json'
+    GAME_TYPES =        'gameTypes.json'
+
+def get_static_data(dtype, product='lol'):
+    pass
+
+
+class RiotQueuesUnranked(Enum):
+    RANKED_SOLO =       'RANKED_SOLO_5x5'
+    RANKED_TEAM =       'RANKED_TEAM_5x5'

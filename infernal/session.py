@@ -68,6 +68,10 @@ class InfernalHTTPSession(requests.Session):
 
         self.auth = InfernalHTTPAuth(key=auth_key)
 
+    
+    def request(self, *args, **kwargs):
+        return super().request(*args, **kwargs)
+
 
 class InfernalHTTPRequest(requests.Request):
     pass
