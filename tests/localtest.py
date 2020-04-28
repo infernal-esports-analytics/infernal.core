@@ -16,5 +16,10 @@ logger = logging.getLogger('local')
 logger.setLevel(logging.INFO)
 
 summoner = create_service('summoner')
-r = summoner.get_summoner_by_id('6ui6PSeq6TL6qS_CJfeTkMSaYh4pKllD4sSQZdQUvhEw4Sw')
-c.jprint(r)
+match = create_service('match')
+
+shparki = summoner.get_summoner_by_name('Shparki')
+c.jprint(shparki)
+
+matchlist = match.get_matches(shparki['accountId'])
+c.jprint(matchlist)
