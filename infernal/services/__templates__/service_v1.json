@@ -1,0 +1,14 @@
+{
+    "__metadata__": {
+        "service_key": "",
+        "service_product": "lol",
+        "service_endpoint": "",
+        "service_version": ""
+    },
+    "requests": {
+        "": {
+            "method": "",
+            "url": ""
+        }
+    }
+}

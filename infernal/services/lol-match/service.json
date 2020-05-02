@@ -1,103 +1,30 @@
 {
     "__metadata__": {
-        "service_product": "lol",
         "service_key": "match",
+        "service_product": "lol",
         "service_endpoint": "match",
         "service_version": "v4"
     },
     "requests": {
         "get_match": {
             "method": "GET",
-            "url": "matches/${match_id}",
-            "params": {
-                "match_id": {
-                    "key": "matchId",
-                    "dtype": "",
-                    "required": true,
-                    "encrypted": true,
-                    "description": ""
-                }
-            },
-            "description": "Get match by match ID.",
-            "dtype": ""
+            "url": "matches/${match_id}"
         },
         "get_matches": {
             "method": "GET",
-            "url": "matchlists/by-account/${account_id}",
-            "params": {
-                "account_id": {
-                    "key": "encryptedAccountId",
-                    "dtype": "",
-                    "required": true,
-                    "encrypted": true,
-                    "description": ""
-                }
-            },
-            "description": "Get matchlist for games played on given account ID and platform ID and filtered using given filter parameters, if any.",
-            "dtype": ""
+            "url": "matchlists/by-account/${account_id}"
         },
         "get_timeline": {
             "method": "GET",
-            "url": "timelines/by-match/${match_id}",
-            "params": {
-                "match_id": {
-                    "key": "matchId",
-                    "dtype": "",
-                    "required": true,
-                    "encrypted": true,
-                    "description": ""
-                }
-            },
-            "description": "Get match timeline by match ID.",
-            "dtype": ""
-        },
-        "get_tournament_matches": {
-            "method": "GET",
-            "url": "matches/by-tournament-code/${tournament_code}/ids",
-            "params": {
-                "tournament_code": {
-                    "key": "tournamentCode",
-                    "dtype": "",
-                    "required": true,
-                    "encrypted": true,
-                    "description": ""
-                }
-            },
-            "description": "Get match IDs by tournament code.",
-            "dtype": ""
+            "url": "timelines/by-match/${match_id}"
         },
         "get_tournament_match": {
             "method": "GET",
-            "url": "matches/${match_id}/by-tournament-code/${tournament_code}",
-            "params": {
-                "match_id": {
-                    "key": "matchId",
-                    "dtype": "",
-                    "required": true,
-                    "encrypted": true,
-                    "description": ""
-                },
-                "tournament_code": {
-                    "key": "tournamentCode",
-                    "dtype": "",
-                    "required": true,
-                    "encrypted": true,
-                    "description": ""
-                }
-            },
-            "description": "",
-            "dtype": ""
-        }
-    },
-    "models": {
-        "": {
-            "__metadata__": {
-                "class": ""
-            },
-            "": {
-                "key": "",
-                "dtype": ""
-            }
+            "url": "matches/${match_id}/by-tournament-code/${tournament_code}"
+        },
+        "get_tournament_matches": {
+            "method": "GET",
+            "url": "matches/by-tournament-code/${tournament_code}/ids"
         }
     }
 }

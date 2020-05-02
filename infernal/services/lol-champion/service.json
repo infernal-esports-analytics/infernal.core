@@ -1,34 +1,14 @@
 {
     "__metadata__": {
         "service_key": "champion",
+        "service_product": "lol",
         "service_endpoint": "platform",
         "service_version": "v3"
     },
     "requests": {
         "get_champion_rotations": {
             "method": "GET",
-            "url": "champion-rotations",
-            "description": "Returns champion rotations, including free-to-play and low-level free-to-play rotations (REST)",
-            "dtype": "%champion_info_dto%"
-        }
-    },
-    "models": {
-        "champion_info_dto": {
-            "__metadata__": {
-                "class": "ChampionInfoDTO"
-            },
-            "global_champion_ids": {
-                "key": "freeChampionIdsForNewPlayers",
-                "dtype": "list[int]"
-            },
-            "new_player_champion_ids": {
-                "key": "freeChampionIds",
-                "dtype": "list[int]"
-            },
-            "new_player_max_level": {
-                "key": "maxNewPlayerLevel",
-                "dtype": "int"
-            }
+            "url": "champion-rotations"
         }
     }
 }

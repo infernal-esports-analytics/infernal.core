@@ -1,0 +1,36 @@
+{
+    "__metadata__": {
+        "service_product": "lol",
+        "service_key": "",
+        "service_endpoint": "",
+        "service_version": ""
+    },
+    "requests": {
+        "": {
+            "method": "",
+            "url": "",
+            "params": {
+                "": {
+                    "key": "",
+                    "dtype": "",
+                    "required": true,
+                    "encrypted": true,
+                    "description": ""
+                }
+            },
+            "description": "",
+            "dtype": ""
+        }
+    },
+    "models": {
+        "": {
+            "__metadata__": {
+                "class": ""
+            },
+            "": {
+                "key": "",
+                "dtype": ""
+            }
+        }
+    }
+}

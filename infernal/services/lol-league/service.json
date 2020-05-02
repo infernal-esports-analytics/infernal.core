@@ -2,281 +2,34 @@
 {
     "__metadata__": {
         "service_key": "league",
+        "service_product": "lol",
         "service_endpoint": "league",
         "service_version": "v4"
     },
     "requests": {
-        "challenger_leagues_by_queue": {
+        "get_league": {
             "method": "GET",
-            "url": "challengerleagues/by-queue/${queue}",
-            "path_params": {
-                "queue": {
-                    "dtype": "string",
-                    "values": [
-                        "RANKED_SOLO_5x5",
-                        "RANKED_FLEX_SR",
-                        "RANKED_FLEX_TT"
-                    ],
-                    "required": true
-                }
-            },
-            "models": {
-                "output": "league_list_dto"
-            }
+            "url": "leagues/${league_id}"
         },
-        "entries_by_summoner_id": {
+        "get_entries": {
             "method": "GET",
-            "url": "entries/by-summoner/${summoner_id}",
-            "path_params": {
-                "summoner_id": {
-                    "key": "encryptedSummonerId",
-                    "dtype": "string",
-                    "required": true,
-                    "encrypted": true,
-                    "description": "Summoner ID associated with the player"
-                }
-            },
-            "models": {
-                "output": "set[league_entry_dto]"
-            }
+            "url": "entries/${queue}/${tier}/${division}"
         },
-        "entries_by_queue_tier_division": {
+        "get_summoner_entries": {
             "method": "GET",
-            "url": "entries/${queue}/${tier}/${division}",
-            "path_params": {
-                "queue": {
-                    "dtype": "string",
-                    "values": [
-                        "RANKED_SOLO_5x5",
-                        "RANKED_FLEX_SR",
-                        "RANKED_FLEX_TT"
-                    ],
-                    "required": true
-                },
-                "tier": {
-                    "dtype": "string",
-                    "values": [
-                        "DIAMOND",
-                        "PLATINUM",
-                        "GOLD",
-                        "SILVER",
-                        "BRONZE",
-                        "IRON"
-                    ],
-                    "required": true
-                },
-                "division": {
-                    "dtype": "string",
-                    "values": [
-                        "I",
-                        "II",
-                        "III",
-                        "IV"
-                    ],
-                    "required": true
-                }
-            },
-            "models": {
-                "output": "set[league_entry_dto]"
-            }
+            "url": "entries/by-summoner/${summoner_id}"
         },
-        "grandmaster_leagues_by_queue": {
+        "get_master_league": {
             "method": "GET",
-            "url": "grandmasterleagues/by-queue/${queue}",
-            "path_params": {
-                "queue": {
-                    "dtype": "string",
-                    "values": [
-                        "RANKED_SOLO_5x5",
-                        "RANKED_FLEX_SR",
-                        "RANKED_FLEX_TT"
-                    ],
-                    "required": true
-                }
-            },
-            "models": {
-                "output": "league_list_dto"
-            }
+            "url": "masterleagues/by-queue/${queue}"
         },
-        "leagues_by_id": {
+        "get_grandmaster_league": {
             "method": "GET",
-            "url": "leagues/${league_id}",
-            "path_params": {
-                "league_id": {
-                    "key": "leagueId",
-                    "dtype": "string",
-                    "required": true,
-                    "description": "The UUID of the league."
-                }
-            },
-            "models": {
-                "output": "league_list_dto"
-            }
+            "url": "grandmasterleagues/by-queue/${queue}"
         },
-        "master_leagues_by_queue": {
+        "get_challenger_league": {
             "method": "GET",
-            "url": "masterleagues/by-queue/${queue}",
-            "path_params": {
-                "queue": {
-                    "dtype": "string",
-                    "values": [
-                        "RANKED_SOLO_5x5",
-                        "RANKED_FLEX_SR",
-                        "RANKED_FLEX_TT"
-                    ],
-                    "required": true
-                }
-            },
-            "models": {
-                "output": "league_list_dto"
-            }
-        }
-    },
-    "models": {
-        "league_list_dto": {
-            "__metadata__": {
-                "class": "LeagueListDTO"
-            },
-            "league_id": {
-                "key": "leagueId",
-                "dtype": "string"
-            },
-            "tier": {
-                "dtype": "string"
-            },
-            "entries": {
-                "dtype": "list[league_item_dto]"
-            },
-            "queue": {
-                "dtype": "string"
-            },
-            "name": {
-                "dtype": "string"
-            }
-        },
-        "league_item_dto": {
-            "__metadata__": {
-                "class": "LeagueItemDTO"
-            },
-            "summoner_name": {
-                "key": "summonerName",
-                "dtype": "string"
-            },
-            "hot_streak": {
-                "key": "hotStreak",
-                "dtype": "boolean"
-            },
-            "mini_series": {
-                "key": "miniSeries",
-                "dtype": "mini_series_dto"
-            },
-            "wins": {
-                "dtype": "int",
-                "description": "Winning team on Summoners Rift."
-            },
-            "veteran": {
-                "dtype": "boolean"
-            },
-            "losses": {
-                "dtype": "int",
-                "description": "Losing team on Summoners Rift."
-            },
-            "fresh_blood": {
-                "key": "freshBlood",
-                "dtype": "boolean"
-            },
-            "inactive": {
-                "dtype": "boolean"
-            },
-            "rank": {
-                "dtype": "string"
-            },
-            "summoner_id": {
-                "key": "summonerId",
-                "dtype": "string",
-                "encrypted": true,
-                "description": "Player's encrypted summonerId."
-            },
-            "league_points": {
-                "key": "leaguePoints",
-                "dtype": "int"
-            }
-        },
-        "league_entry_dto": {
-            "__metadata__": {
-                "class": "LeagueEntryDTO"
-            },
-            "queue_type": {
-                "key": "queueType",
-                "dtype": "string"
-            },
-            "summoner_name": {
-                "key": "summonerName",
-                "dtype": "string"
-            },
-            "hot_streak": {
-                "key": "hotStreak",
-                "dtype": "boolean"
-            },
-            "mini_series": {
-                "key": "miniSeries",
-                "dtype": "mini_series_dto"
-            },
-            "wins": {
-                "dtype": "int",
-                "description": "Winning team on Summoners Rift."
-            },
-            "veteran": {
-                "dtype": "boolean"
-            },
-            "losses": {
-                "dtype": "int",
-                "description": "Losing team on Summoners Rift."
-            },
-            "rank": {
-                "dtype": "string"
-            },
-            "league_id": {
-                "dtype": "string"
-            },
-            "inactive": {
-                "dtype": "boolean"
-            },
-            "fresh_blood": {
-                "key": "freshBlood",
-                "dtype": "boolean"
-            },
-            "tier": {
-                "dtype": "string"
-            },
-            "summoner_id": {
-                "key": "summonerId",
-                "dtype": "string",
-                "encrypted": true,
-                "description": "Player's encrypted summonerId."
-            },
-            "league_points": {
-                "key": "leaguePoints",
-                "dtype": "int"
-            }
-            
-        },
-        "mini_series_dto": {
-            "__metadata__": {
-                "class": "MiniSeriesDTO"
-            },
-            "progress": {
-                "dtype": "string"
-            },
-            "losses": {
-                "dtype": "int"
-            },
-            "target": {
-                "dtype": "int"
-            },
-            "wins": {
-                "dtype": "int"
-            }
+            "url": "challengerleagues/by-queue/${queue}"
         }
     }
 }
