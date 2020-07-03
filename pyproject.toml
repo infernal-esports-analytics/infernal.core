@@ -8,6 +8,7 @@ authors = ["Shparki <murrmat@gmail.com>"]
 python = "^3.7"
 requests = "^2.23.0"
 selenium = "^3.141.0"
+vaex = "^3.0.0"
 
 [tool.poetry.dev-dependencies]
 numpy = "^1.18.2"
